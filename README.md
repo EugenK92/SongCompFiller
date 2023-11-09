@@ -30,11 +30,9 @@ python3 discordbot.py
 
 - Type into Channel
 ```
-!load <SongCompLink here> <gamenumber>
+!load <SongCompLink here> <discord message link>
 
-!load link.com 1
-!load link.com 2
-```
+!load link.com https://discord.com/channels/123/456/789
 
 
 If Terminal tells "Done" 
