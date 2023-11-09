@@ -48,4 +48,4 @@ The Black Eyed Peas - Where Is The Love? | https://www.youtube.com/watch?v=WpYee
 Eminem - Mockingbird | https://www.youtube.com/watch?v=S9bCLPwzSC0 | 00:07
 ```
 
-If not timestamp is set then it will be 00:00
+If no timestamp is set then it will be 00:00
