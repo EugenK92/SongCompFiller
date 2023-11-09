@@ -19,7 +19,7 @@ wget <link>
 ```
 # .env
 DISCORD_TOKEN="<insert token here>"
-CHANNEL="<insert channelname here>"
+DISCORD_CHANNEL="<insert channelname here>"
 
 ```
 
@@ -30,8 +30,12 @@ python3 discordbot.py
 
 - Type into Channel
 ```
-!load <SongCompLink here>
+!load <SongCompLink here> <gamenumber>
+
+!load link.com 1
+!load link.com 2
 ```
+
 
 If Terminal tells "Done" 
 
