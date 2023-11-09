@@ -19,7 +19,6 @@ wget <link>
 ```
 # .env
 DISCORD_TOKEN="<insert token here>"
-DISCORD_CHANNEL="<insert channelname here>"
 DISCORD_ALLOW_ROLE="<Role>"
 
 ```

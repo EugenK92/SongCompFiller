@@ -8,7 +8,6 @@ import json
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-CHANNEL = os.getenv('DISCORD_CHANNEL')
 DISCORD_ALLOW_ROLE = os.getenv('DISCORD_ALLOW_ROLE')
 
 intents = discord.Intents.default()
@@ -20,26 +19,6 @@ client = discord.Client(intents=intents)
 async def on_ready():
     print(f'{client.user} has connected to Discord!')
 
-
-async def read_latest_message(channel_name, game):
-    # Fetch the channel by name
-    channel = discord.utils.get(client.get_all_channels(), name=channel_name)
-
-    if channel:
-        # Fetch the channel's message history
-        latest_message = ""
-        async for message in channel.history(limit=4):
-									if game == "1" and "Kategorie 1:" in message.content:
-											latest_message = message.content.split("Kategorie 1:")[1].strip()
-									if game == "2" and "Kategorie 2:" in message.content:
-											latest_message = message.content.split("Kategorie 2:")[1].strip()
-
-        parsed_data = await parse_message_content(latest_message)
-        await save_to_file(parsed_data)
-        print("Done")
-    else:
-        print(f'Channel {channel_name} not found')
-
 # Example usage
 @client.event
 async def on_message(message):
@@ -50,9 +29,40 @@ async def on_message(message):
     if role:
       if message.content.startswith('!load'):
 					 		link = message.content.split(' ')[1].strip()
-					 		game = message.content.split(' ')[2].strip()
 					 		await save_link_to_file(link)
-					 		await read_latest_message(CHANNEL, game)
+
+					 		messageLink = message.content.split(' ')[2].strip()
+					 		songNames = await getMessage(messageLink)
+					 		parsed_data = await parse_message_content(songNames)
+					 		await save_to_file(parsed_data)
+					 		print("Done")
+
+async def getMessage(link):
+    if "https://discord.com/channels/" in link:
+        link_parts = link.split('/')
+        guild_id = int(link_parts[4])
+        channel_id = int(link_parts[5])
+        message_id = int(link_parts[6])
+
+        try:
+            # Fetch the message using the extracted IDs
+            guild = discord.utils.get(client.guilds, id=guild_id)
+            channel = discord.utils.get(guild.channels, id=channel_id)
+            fetched_message = await channel.fetch_message(message_id)
+
+            if "Kategorie" in fetched_message.content:
+              fetched_message.content = await removeFirstLine(fetched_message.content)
+
+            return fetched_message.content
+        except discord.NotFound:
+            print("Message not found.")
+
+async def removeFirstLine(text):
+  blocks = [block.strip() for block in text.strip().split('\n\n')]
+  modified_blocks = [block.split('\n', 1)[1] if '\n' in block else '' for block in blocks]
+  result = '\n\n'.join(modified_blocks)
+
+  return result
 
 async def parse_message_content(content):
     lines = content.split('\n')
