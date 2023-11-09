@@ -9,6 +9,7 @@ import json
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 CHANNEL = os.getenv('DISCORD_CHANNEL')
+DISCORD_ALLOW_ROLE = os.getenv('DISCORD_ALLOW_ROLE')
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -45,7 +46,9 @@ async def on_message(message):
     if message.author == client.user:
         return  # Ignore messages from the bot itself
     
-    if message.content.startswith('!load'):
+    role = discord.utils.get(message.author.roles, name=DISCORD_ALLOW_ROLE)
+    if role:
+      if message.content.startswith('!load'):
 					 		link = message.content.split(' ')[1].strip()
 					 		game = message.content.split(' ')[2].strip()
 					 		await save_link_to_file(link)
