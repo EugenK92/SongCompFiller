@@ -8,6 +8,7 @@ import json
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+CHANNEL = os.getenv('DISCORD_CHANNEL')
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -19,15 +20,20 @@ async def on_ready():
     print(f'{client.user} has connected to Discord!')
 
 
-async def read_latest_message(channel_name):
+async def read_latest_message(channel_name, game):
     # Fetch the channel by name
     channel = discord.utils.get(client.get_all_channels(), name=channel_name)
 
     if channel:
         # Fetch the channel's message history
-        async for message in channel.history(limit=2):
-            latest_message = message
-        parsed_data = await parse_message_content(latest_message.content)
+        latest_message = ""
+        async for message in channel.history(limit=4):
+									if game == "1" and "Kategorie 1:" in message.content:
+											latest_message = message.content.split("Kategorie 1:")[1].strip()
+									if game == "2" and "Kategorie 2:" in message.content:
+											latest_message = message.content.split("Kategorie 2:")[1].strip()
+
+        parsed_data = await parse_message_content(latest_message)
         await save_to_file(parsed_data)
         print("Done")
     else:
@@ -40,9 +46,10 @@ async def on_message(message):
         return  # Ignore messages from the bot itself
     
     if message.content.startswith('!load'):
-					 		link = message.content.split('!load')[1].strip()
-					 		await save_link_to_file(link)
-					 		await read_latest_message('testroom')
+					 		link = message.content.split(' ')[1].strip()
+					 		game = message.content.split(' ')[2].strip()
+					 		#await save_link_to_file(link)
+					 		await read_latest_message(CHANNEL, game)
 
 async def parse_message_content(content):
     lines = content.split('\n')
