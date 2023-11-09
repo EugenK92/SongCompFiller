@@ -48,7 +48,7 @@ async def on_message(message):
     if message.content.startswith('!load'):
 					 		link = message.content.split(' ')[1].strip()
 					 		game = message.content.split(' ')[2].strip()
-					 		#await save_link_to_file(link)
+					 		await save_link_to_file(link)
 					 		await read_latest_message(CHANNEL, game)
 
 async def parse_message_content(content):
